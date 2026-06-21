@@ -16,9 +16,7 @@
     --silver: #b8afc8;
     --mist:   #e8e2f0;
   }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     background: var(--ink);
     color: var(--mist);
@@ -28,33 +26,21 @@
     line-height: 1.6;
     min-height: 100dvh;
     overflow-x: hidden;
-    padding-bottom: 80px; /* space for MainButton */
+    padding-bottom: 80px;
   }
-
-  /* ── Stars ── */
-  #sky {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  }
+  #sky { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
   .star {
     position: absolute; border-radius: 50%; background: white;
-    animation: twinkle var(--d,3s) ease-in-out infinite var(--delay,0s);
-    opacity: 0;
+    animation: twinkle var(--d,3s) ease-in-out infinite var(--delay,0s); opacity: 0;
   }
   @keyframes twinkle {
     0%,100%{opacity:0;transform:scale(.8)} 50%{opacity:var(--op,.5);transform:scale(1)}
   }
-
   .layer { position: relative; z-index: 1; }
-
-  /* ── Screens ── */
   .screen { display: none; padding: 1.5rem; }
   .screen.active { display: block; }
 
-  /* ── Home ── */
-  .home-header {
-    text-align: center;
-    padding: 2.5rem 1rem 2rem;
-  }
+  .home-header { text-align: center; padding: 2.5rem 1rem 2rem; }
   .moon {
     width: 64px; height: 64px; border-radius: 50%;
     background: radial-gradient(circle at 35% 38%, #ede0b0, #c9a96e 50%, #8a6a30);
@@ -68,106 +54,64 @@
   }
   .home-header h1 {
     font-family: 'Cormorant Garamond', serif;
-    font-weight: 300;
-    font-size: 2rem;
-    line-height: 1.15;
-    color: var(--mist);
+    font-weight: 300; font-size: 2rem; line-height: 1.15; color: var(--mist);
   }
   .home-header h1 em { font-style: italic; color: var(--gold); }
-  .home-header p {
-    font-size: .85rem; color: var(--silver); margin-top: .7rem;
-  }
-  .user-greeting {
-    font-size: .78rem; color: var(--gold); letter-spacing: .1em;
-    margin-bottom: .4rem; text-transform: uppercase; opacity: .85;
-  }
+  .home-header p { font-size: .85rem; color: var(--silver); margin-top: .7rem; }
+  .user-greeting { font-size: .78rem; color: var(--gold); letter-spacing: .1em; margin-bottom: .4rem; text-transform: uppercase; opacity: .85; }
 
-  /* Spread cards list */
   .spreads-list { display: flex; flex-direction: column; gap: .75rem; margin-top: 1.5rem; }
   .spread-item {
     display: flex; align-items: center; gap: 1rem;
-    background: var(--veil);
-    padding: 1rem 1.2rem;
-    cursor: pointer;
-    border: 1px solid transparent;
+    background: var(--veil); padding: 1rem 1.2rem;
+    cursor: pointer; border: 1px solid transparent;
     transition: border-color .2s, background .2s;
     -webkit-tap-highlight-color: transparent;
   }
-  .spread-item:active, .spread-item.selected {
-    border-color: var(--gold);
-    background: #312040;
-  }
+  .spread-item:active, .spread-item.selected { border-color: var(--gold); background: #312040; }
   .spread-item .icon { font-size: 1.5rem; flex-shrink: 0; }
-  .spread-item .info .name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.05rem; color: var(--mist);
-  }
-  .spread-item .info .desc { font-size: .78rem; color: var(--silver); margin-top: .15rem; }
+  .spread-item .info { flex: 1; }
+  .spread-item .info .name { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; color: var(--mist); }
+  .spread-item .info .desc { font-size: .78rem; color: var(--silver); margin-top: .1rem; }
+  .spread-item .price { margin-left: auto; flex-shrink: 0; font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--gold); }
 
-  /* ── Form screen ── */
-  .form-header {
-    display: flex; align-items: center; gap: .8rem;
-    margin-bottom: 1.8rem;
-  }
-  .back-btn {
-    background: none; border: none; color: var(--gold);
-    font-size: 1.2rem; cursor: pointer; padding: 0; line-height: 1;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .form-header h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 300; font-size: 1.4rem; color: var(--mist);
-  }
+  .form-header { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.8rem; }
+  .back-btn { background: none; border: none; color: var(--gold); font-size: 1.2rem; cursor: pointer; padding: 0; line-height: 1; }
+  .form-header h2 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 1.4rem; color: var(--mist); }
+
   .selected-spread-badge {
-    display: inline-block;
-    font-size: .75rem; color: var(--gold);
+    display: flex; align-items: center; justify-content: space-between;
     border: 1px solid rgba(201,169,110,.4);
-    padding: .2rem .7rem; margin-bottom: 1.5rem;
+    padding: .5rem .9rem; margin-bottom: 1.5rem;
   }
+  .badge-name { font-size: .85rem; color: var(--gold); }
+  .badge-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--mist); }
 
   .form-group { margin-bottom: 1.4rem; }
-  label {
-    display: block; font-size: .68rem;
-    letter-spacing: .15em; text-transform: uppercase;
-    color: var(--silver); margin-bottom: .4rem;
-  }
+  label { display: block; font-size: .68rem; letter-spacing: .15em; text-transform: uppercase; color: var(--silver); margin-bottom: .4rem; }
   input, textarea {
-    width: 100%; background: transparent;
-    border: none; border-bottom: 1px solid var(--dust);
-    color: var(--mist);
+    width: 100%; background: transparent; border: none;
+    border-bottom: 1px solid var(--dust); color: var(--mist);
     font-family: 'Jost', sans-serif; font-weight: 300; font-size: .95rem;
-    padding: .6rem 0; outline: none;
-    transition: border-color .2s;
+    padding: .6rem 0; outline: none; transition: border-color .2s;
   }
   input::placeholder, textarea::placeholder { color: var(--dust); }
   input:focus, textarea:focus { border-color: var(--gold); }
   textarea { resize: vertical; min-height: 80px; }
-
-  /* ── Success screen ── */
-  .success-screen {
-    text-align: center;
-    padding: 4rem 2rem;
-  }
-  .success-screen .big { font-size: 3.5rem; margin-bottom: 1.2rem; }
-  .success-screen h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 300; font-size: 1.9rem;
-    color: var(--mist); margin-bottom: .7rem;
-  }
-  .success-screen p { color: var(--silver); font-size: .9rem; }
-
-  .divider { height: 1px; background: var(--veil); margin: 1.5rem 0; }
-
-  /* error hint */
   .field-error { font-size: .72rem; color: #e07070; margin-top: .3rem; display: none; }
   .field-error.show { display: block; }
+
+  .success-screen { text-align: center; padding: 4rem 2rem; }
+  .success-screen .big { font-size: 3.5rem; margin-bottom: 1.2rem; }
+  .success-screen h2 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 1.9rem; color: var(--mist); margin-bottom: .7rem; }
+  .success-screen p { color: var(--silver); font-size: .9rem; }
+  .divider { height: 1px; background: var(--veil); margin: 1.5rem 0; }
 </style>
 </head>
 <body>
 
 <div id="sky" aria-hidden="true"></div>
 
-<!-- ── HOME ── -->
 <div class="screen layer active" id="screen-home">
   <div class="home-header">
     <div class="moon" aria-hidden="true"></div>
@@ -175,33 +119,28 @@
     <h1>Послание из <em>карт</em></h1>
     <p>Выбери расклад — и запишись на консультацию</p>
   </div>
-
-  <div class="spreads-list" id="spreads-list">
-    <!-- Rendered by JS -->
-  </div>
+  <div class="spreads-list" id="spreads-list"></div>
 </div>
 
-<!-- ── FORM ── -->
 <div class="screen layer" id="screen-form">
   <div class="form-header">
-    <button class="back-btn" onclick="goHome()" aria-label="Назад">←</button>
+    <button class="back-btn" onclick="goHome()">←</button>
     <h2>Запись на расклад</h2>
   </div>
-
-  <div class="selected-spread-badge" id="selected-badge">🃏 Три карты</div>
-
+  <div class="selected-spread-badge">
+    <span class="badge-name" id="badge-name"></span>
+    <span class="badge-price" id="badge-price"></span>
+  </div>
   <div class="form-group">
     <label for="f-name">Как тебя зовут</label>
-    <input id="f-name" type="text" placeholder="Имя или псевдоним" autocomplete="name">
+    <input id="f-name" type="text" placeholder="Имя или псевдоним">
     <div class="field-error" id="err-name">Введи имя</div>
   </div>
-
   <div class="form-group">
     <label for="f-contact">Telegram или телефон</label>
     <input id="f-contact" type="text" placeholder="@username или +7…">
     <div class="field-error" id="err-contact">Укажи способ связи</div>
   </div>
-
   <div class="form-group">
     <label for="f-question">Твой вопрос или тема</label>
     <textarea id="f-question" placeholder="Опиши ситуацию или напиши «открытый запрос»"></textarea>
@@ -209,7 +148,6 @@
   </div>
 </div>
 
-<!-- ── SUCCESS ── -->
 <div class="screen layer" id="screen-success">
   <div class="success-screen">
     <div class="big">🌙</div>
@@ -221,23 +159,17 @@
 </div>
 
 <script>
-// ── Telegram Web App init ────────────────────────────────────────────────────
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
 
-// Greeting from TG user
 const user = tg.initDataUnsafe?.user;
 if (user?.first_name) {
   document.getElementById('greeting').textContent = `Привет, ${user.first_name} 🌙`;
 }
 
-// Back button behaviour
-tg.BackButton.onClick(() => {
-  if (currentScreen === 'form') goHome();
-});
+tg.BackButton.onClick(() => { if (currentScreen === 'form') goHome(); });
 
-// ── Stars ────────────────────────────────────────────────────────────────────
 (function() {
   const sky = document.getElementById('sky');
   for (let i = 0; i < 70; i++) {
@@ -249,31 +181,29 @@ tg.BackButton.onClick(() => {
   }
 })();
 
-// ── Spreads data ──────────────────────────────────────────────────────────────
 const SPREADS = [
-  { key: 'card_of_day',  icon: '🌙', name: 'Карта дня',       desc: 'Одна карта — послание на сегодня' },
-  { key: 'three_cards',  icon: '🃏', name: 'Три карты',        desc: 'Прошлое · Настоящее · Будущее' },
-  { key: 'celtic_cross', icon: '✦',  name: 'Кельтский крест',  desc: '10 карт — глубокий разбор ситуации' },
-  { key: 'love',         icon: '❤️', name: 'На отношения',     desc: 'Что происходит между вами' },
-  { key: 'finance',      icon: '💰', name: 'На финансы',       desc: 'Деньги, карьера, рост' },
-  { key: 'choice',       icon: '🔀', name: 'Выбор пути',       desc: 'Два варианта — карты укажут дорогу' },
+  { key: 'card_of_day',  icon: '🌙', name: 'Карта дня',      desc: 'Одна карта — послание на сегодня', price: '150 ₽' },
+  { key: 'three_cards',  icon: '🃏', name: 'Три карты',       desc: 'Прошлое · Настоящее · Будущее',   price: '200 ₽' },
+  { key: 'celtic_cross', icon: '✦',  name: 'Кельтский крест', desc: '10 карт — глубокий разбор',        price: '500 ₽' },
+  { key: 'love',         icon: '❤️', name: 'На отношения',    desc: 'Что происходит между вами',        price: '300 ₽' },
+  { key: 'finance',      icon: '💰', name: 'На деньги',       desc: 'Деньги, карьера, рост',            price: '300 ₽' },
+  { key: 'choice',       icon: '🔀', name: 'Выбор пути',      desc: 'Два варианта — карты укажут путь', price: '300 ₽' },
 ];
 
 let selectedSpread = null;
 let currentScreen  = 'home';
 
-// Render spread list
 const list = document.getElementById('spreads-list');
 SPREADS.forEach(sp => {
   const el = document.createElement('div');
   el.className = 'spread-item';
-  el.dataset.key = sp.key;
   el.innerHTML = `
     <div class="icon">${sp.icon}</div>
     <div class="info">
       <div class="name">${sp.name}</div>
       <div class="desc">${sp.desc}</div>
     </div>
+    <div class="price">${sp.price}</div>
   `;
   el.addEventListener('click', () => selectSpread(sp, el));
   list.appendChild(el);
@@ -283,14 +213,11 @@ function selectSpread(sp, el) {
   document.querySelectorAll('.spread-item').forEach(i => i.classList.remove('selected'));
   el.classList.add('selected');
   selectedSpread = sp;
-
-  // Show MainButton
-  tg.MainButton.setText('Записаться →');
+  tg.MainButton.setText(`Записаться · ${sp.price}`);
   tg.MainButton.show();
   tg.MainButton.onClick(goToForm);
 }
 
-// ── Navigation ────────────────────────────────────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
@@ -300,43 +227,39 @@ function showScreen(id) {
 
 function goToForm() {
   if (!selectedSpread) return;
-  document.getElementById('selected-badge').textContent =
-    `${selectedSpread.icon} ${selectedSpread.name}`;
-
-  // Pre-fill contact from TG if available
+  document.getElementById('badge-name').textContent  = `${selectedSpread.icon} ${selectedSpread.name}`;
+  document.getElementById('badge-price').textContent = selectedSpread.price;
   if (user?.username && !document.getElementById('f-contact').value) {
     document.getElementById('f-contact').value = '@' + user.username;
   }
-
   tg.MainButton.setText('Отправить заявку');
   tg.MainButton.offClick(goToForm);
   tg.MainButton.onClick(submitForm);
   tg.BackButton.show();
-
   showScreen('form');
 }
 
 function goHome() {
   tg.MainButton.offClick(submitForm);
   tg.MainButton.onClick(goToForm);
-  tg.MainButton.setText('Записаться →');
-  if (!selectedSpread) tg.MainButton.hide();
+  if (selectedSpread) {
+    tg.MainButton.setText(`Записаться · ${selectedSpread.price}`);
+  } else {
+    tg.MainButton.hide();
+  }
   tg.BackButton.hide();
   showScreen('home');
 }
 
-// ── Form submit ───────────────────────────────────────────────────────────────
 function submitForm() {
   const name     = document.getElementById('f-name').value.trim();
   const contact  = document.getElementById('f-contact').value.trim();
   const question = document.getElementById('f-question').value.trim();
-
   let valid = true;
-
   const check = (val, errId) => {
     const el = document.getElementById(errId);
     if (!val) { el.classList.add('show'); valid = false; }
-    else       { el.classList.remove('show'); }
+    else { el.classList.remove('show'); }
   };
   check(name,     'err-name');
   check(contact,  'err-contact');
@@ -346,25 +269,20 @@ function submitForm() {
   tg.MainButton.showProgress();
   tg.MainButton.disable();
 
-  // Payload — отправляется боту через sendData
   const payload = {
     spread:   selectedSpread.name,
+    price:    selectedSpread.price,
     name,
     contact,
     question,
-    tg_user:  user ? `@${user.username || '—'} (${user.id})` : '—',
+    tg_user: user ? `@${user.username || '—'} (${user.id})` : '—',
   };
 
-  // sendData закрывает Mini App и отправляет данные боту
-  // Бот должен слушать web_app_data (см. tarot_bot.py)
   tg.sendData(JSON.stringify(payload));
-
-  // Показываем success на случай задержки закрытия
   tg.MainButton.hideProgress();
   tg.MainButton.hide();
   tg.BackButton.hide();
   showScreen('success');
-
   setTimeout(() => tg.close(), 2500);
 }
 </script>
