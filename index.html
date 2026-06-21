@@ -269,38 +269,14 @@ async function submitForm() {
   tg.MainButton.showProgress();
   tg.MainButton.disable();
 
-  const BOT_TOKEN = "8663679950:AAH_Tnx9mtotMohwyc_KP2OK4YTuQTIq7Qk";
-  const ADMIN_ID  = "1470728379";
-
-  const text = `🔮 Новая заявка!\n\n🃏 Расклад: ${selectedSpread.name}\n💰 Цена: ${selectedSpread.price}\n👤 Имя: ${name}\n📱 Контакт: ${contact}\n💬 Вопрос: ${question}\n🔗 Telegram: @${user?.username || '—'} (${user?.id || '—'})\n\nСтатус: 🟡 Ожидает`;
-
-  const userId = user?.id || '';
-
-  try {
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: ADMIN_ID,
-        text,
-        reply_markup: {
-          inline_keyboard: [[
-            { text: '🟢 Принять', callback_data: `accept:${userId}` },
-            { text: '✅ Выполнено', callback_data: `done:${userId}` }
-          ]]
-        }
-      })
-    });
-  } catch(e) {
-    console.error(e);
-  }
-tg.sendData(JSON.stringify({
-    spread: selectedSpread.name,
-    price:  selectedSpread.price,
+  tg.sendData(JSON.stringify({
+    spread:  selectedSpread.name,
+    price:   selectedSpread.price,
     name,
     contact,
     question,
   }));
+
   tg.MainButton.hideProgress();
   tg.MainButton.hide();
   tg.BackButton.hide();
