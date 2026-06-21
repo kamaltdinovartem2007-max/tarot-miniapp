@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Расклады Таро</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:    #1a1420;
+    --veil:   #2b1f35;
+    --dust:   #4a3860;
+    --gold:   #c9a96e;
+    --silver: #b8afc8;
+    --mist:   #e8e2f0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--ink);
+    color: var(--mist);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    padding-bottom: 80px; /* space for MainButton */
+  }
+
+  /* ── Stars ── */
+  #sky {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  }
+  .star {
+    position: absolute; border-radius: 50%; background: white;
+    animation: twinkle var(--d,3s) ease-in-out infinite var(--delay,0s);
+    opacity: 0;
+  }
+  @keyframes twinkle {
+    0%,100%{opacity:0;transform:scale(.8)} 50%{opacity:var(--op,.5);transform:scale(1)}
+  }
+
+  .layer { position: relative; z-index: 1; }
+
+  /* ── Screens ── */
+  .screen { display: none; padding: 1.5rem; }
+  .screen.active { display: block; }
+
+  /* ── Home ── */
+  .home-header {
+    text-align: center;
+    padding: 2.5rem 1rem 2rem;
+  }
+  .moon {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 38%, #ede0b0, #c9a96e 50%, #8a6a30);
+    box-shadow: 0 0 40px 12px rgba(201,169,110,.3);
+    margin: 0 auto 1.2rem;
+    animation: mpulse 5s ease-in-out infinite;
+  }
+  @keyframes mpulse {
+    0%,100%{box-shadow:0 0 40px 12px rgba(201,169,110,.3)}
+    50%{box-shadow:0 0 60px 20px rgba(201,169,110,.45)}
+  }
+  .home-header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 2rem;
+    line-height: 1.15;
+    color: var(--mist);
+  }
+  .home-header h1 em { font-style: italic; color: var(--gold); }
+  .home-header p {
+    font-size: .85rem; color: var(--silver); margin-top: .7rem;
+  }
+  .user-greeting {
+    font-size: .78rem; color: var(--gold); letter-spacing: .1em;
+    margin-bottom: .4rem; text-transform: uppercase; opacity: .85;
+  }
+
+  /* Spread cards list */
+  .spreads-list { display: flex; flex-direction: column; gap: .75rem; margin-top: 1.5rem; }
+  .spread-item {
+    display: flex; align-items: center; gap: 1rem;
+    background: var(--veil);
+    padding: 1rem 1.2rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: border-color .2s, background .2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .spread-item:active, .spread-item.selected {
+    border-color: var(--gold);
+    background: #312040;
+  }
+  .spread-item .icon { font-size: 1.5rem; flex-shrink: 0; }
+  .spread-item .info .name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem; color: var(--mist);
+  }
+  .spread-item .info .desc { font-size: .78rem; color: var(--silver); margin-top: .15rem; }
+
+  /* ── Form screen ── */
+  .form-header {
+    display: flex; align-items: center; gap: .8rem;
+    margin-bottom: 1.8rem;
+  }
+  .back-btn {
+    background: none; border: none; color: var(--gold);
+    font-size: 1.2rem; cursor: pointer; padding: 0; line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .form-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300; font-size: 1.4rem; color: var(--mist);
+  }
+  .selected-spread-badge {
+    display: inline-block;
+    font-size: .75rem; color: var(--gold);
+    border: 1px solid rgba(201,169,110,.4);
+    padding: .2rem .7rem; margin-bottom: 1.5rem;
+  }
+
+  .form-group { margin-bottom: 1.4rem; }
+  label {
+    display: block; font-size: .68rem;
+    letter-spacing: .15em; text-transform: uppercase;
+    color: var(--silver); margin-bottom: .4rem;
+  }
+  input, textarea {
+    width: 100%; background: transparent;
+    border: none; border-bottom: 1px solid var(--dust);
+    color: var(--mist);
+    font-family: 'Jost', sans-serif; font-weight: 300; font-size: .95rem;
+    padding: .6rem 0; outline: none;
+    transition: border-color .2s;
+  }
+  input::placeholder, textarea::placeholder { color: var(--dust); }
+  input:focus, textarea:focus { border-color: var(--gold); }
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* ── Success screen ── */
+  .success-screen {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+  .success-screen .big { font-size: 3.5rem; margin-bottom: 1.2rem; }
+  .success-screen h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300; font-size: 1.9rem;
+    color: var(--mist); margin-bottom: .7rem;
+  }
+  .success-screen p { color: var(--silver); font-size: .9rem; }
+
+  .divider { height: 1px; background: var(--veil); margin: 1.5rem 0; }
+
+  /* error hint */
+  .field-error { font-size: .72rem; color: #e07070; margin-top: .3rem; display: none; }
+  .field-error.show { display: block; }
+</style>
+</head>
+<body>
+
+<div id="sky" aria-hidden="true"></div>
+
+<!-- ── HOME ── -->
+<div class="screen layer active" id="screen-home">
+  <div class="home-header">
+    <div class="moon" aria-hidden="true"></div>
+    <p class="user-greeting" id="greeting">Добро пожаловать</p>
+    <h1>Послание из <em>карт</em></h1>
+    <p>Выбери расклад — и запишись на консультацию</p>
+  </div>
+
+  <div class="spreads-list" id="spreads-list">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+
+<!-- ── FORM ── -->
+<div class="screen layer" id="screen-form">
+  <div class="form-header">
+    <button class="back-btn" onclick="goHome()" aria-label="Назад">←</button>
+    <h2>Запись на расклад</h2>
+  </div>
+
+  <div class="selected-spread-badge" id="selected-badge">🃏 Три карты</div>
+
+  <div class="form-group">
+    <label for="f-name">Как тебя зовут</label>
+    <input id="f-name" type="text" placeholder="Имя или псевдоним" autocomplete="name">
+    <div class="field-error" id="err-name">Введи имя</div>
+  </div>
+
+  <div class="form-group">
+    <label for="f-contact">Telegram или телефон</label>
+    <input id="f-contact" type="text" placeholder="@username или +7…">
+    <div class="field-error" id="err-contact">Укажи способ связи</div>
+  </div>
+
+  <div class="form-group">
+    <label for="f-question">Твой вопрос или тема</label>
+    <textarea id="f-question" placeholder="Опиши ситуацию или напиши «открытый запрос»"></textarea>
+    <div class="field-error" id="err-question">Напиши хотя бы пару слов</div>
+  </div>
+</div>
+
+<!-- ── SUCCESS ── -->
+<div class="screen layer" id="screen-success">
+  <div class="success-screen">
+    <div class="big">🌙</div>
+    <h2>Заявка принята</h2>
+    <p>Я напишу тебе совсем скоро,<br>чтобы согласовать время.</p>
+    <div class="divider"></div>
+    <p style="color:var(--gold);font-size:.82rem;letter-spacing:.05em">До встречи в картах ✨</p>
+  </div>
+</div>
+
+<script>
+// ── Telegram Web App init ────────────────────────────────────────────────────
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
+
+// Greeting from TG user
+const user = tg.initDataUnsafe?.user;
+if (user?.first_name) {
+  document.getElementById('greeting').textContent = `Привет, ${user.first_name} 🌙`;
+}
+
+// Back button behaviour
+tg.BackButton.onClick(() => {
+  if (currentScreen === 'form') goHome();
+});
+
+// ── Stars ────────────────────────────────────────────────────────────────────
+(function() {
+  const sky = document.getElementById('sky');
+  for (let i = 0; i < 70; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 1.6 + 0.4;
+    s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*4+2).toFixed(1)}s;--delay:-${(Math.random()*6).toFixed(1)}s;--op:${(Math.random()*.45+.15).toFixed(2)}`;
+    sky.appendChild(s);
+  }
+})();
+
+// ── Spreads data ──────────────────────────────────────────────────────────────
+const SPREADS = [
+  { key: 'card_of_day',  icon: '🌙', name: 'Карта дня',       desc: 'Одна карта — послание на сегодня' },
+  { key: 'three_cards',  icon: '🃏', name: 'Три карты',        desc: 'Прошлое · Настоящее · Будущее' },
+  { key: 'celtic_cross', icon: '✦',  name: 'Кельтский крест',  desc: '10 карт — глубокий разбор ситуации' },
+  { key: 'love',         icon: '❤️', name: 'На отношения',     desc: 'Что происходит между вами' },
+  { key: 'finance',      icon: '💰', name: 'На финансы',       desc: 'Деньги, карьера, рост' },
+  { key: 'choice',       icon: '🔀', name: 'Выбор пути',       desc: 'Два варианта — карты укажут дорогу' },
+];
+
+let selectedSpread = null;
+let currentScreen  = 'home';
+
+// Render spread list
+const list = document.getElementById('spreads-list');
+SPREADS.forEach(sp => {
+  const el = document.createElement('div');
+  el.className = 'spread-item';
+  el.dataset.key = sp.key;
+  el.innerHTML = `
+    <div class="icon">${sp.icon}</div>
+    <div class="info">
+      <div class="name">${sp.name}</div>
+      <div class="desc">${sp.desc}</div>
+    </div>
+  `;
+  el.addEventListener('click', () => selectSpread(sp, el));
+  list.appendChild(el);
+});
+
+function selectSpread(sp, el) {
+  document.querySelectorAll('.spread-item').forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSpread = sp;
+
+  // Show MainButton
+  tg.MainButton.setText('Записаться →');
+  tg.MainButton.show();
+  tg.MainButton.onClick(goToForm);
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  currentScreen = id;
+  window.scrollTo(0, 0);
+}
+
+function goToForm() {
+  if (!selectedSpread) return;
+  document.getElementById('selected-badge').textContent =
+    `${selectedSpread.icon} ${selectedSpread.name}`;
+
+  // Pre-fill contact from TG if available
+  if (user?.username && !document.getElementById('f-contact').value) {
+    document.getElementById('f-contact').value = '@' + user.username;
+  }
+
+  tg.MainButton.setText('Отправить заявку');
+  tg.MainButton.offClick(goToForm);
+  tg.MainButton.onClick(submitForm);
+  tg.BackButton.show();
+
+  showScreen('form');
+}
+
+function goHome() {
+  tg.MainButton.offClick(submitForm);
+  tg.MainButton.onClick(goToForm);
+  tg.MainButton.setText('Записаться →');
+  if (!selectedSpread) tg.MainButton.hide();
+  tg.BackButton.hide();
+  showScreen('home');
+}
+
+// ── Form submit ───────────────────────────────────────────────────────────────
+function submitForm() {
+  const name     = document.getElementById('f-name').value.trim();
+  const contact  = document.getElementById('f-contact').value.trim();
+  const question = document.getElementById('f-question').value.trim();
+
+  let valid = true;
+
+  const check = (val, errId) => {
+    const el = document.getElementById(errId);
+    if (!val) { el.classList.add('show'); valid = false; }
+    else       { el.classList.remove('show'); }
+  };
+  check(name,     'err-name');
+  check(contact,  'err-contact');
+  check(question, 'err-question');
+  if (!valid) return;
+
+  tg.MainButton.showProgress();
+  tg.MainButton.disable();
+
+  // Payload — отправляется боту через sendData
+  const payload = {
+    spread:   selectedSpread.name,
+    name,
+    contact,
+    question,
+    tg_user:  user ? `@${user.username || '—'} (${user.id})` : '—',
+  };
+
+  // sendData закрывает Mini App и отправляет данные боту
+  // Бот должен слушать web_app_data (см. tarot_bot.py)
+  tg.sendData(JSON.stringify(payload));
+
+  // Показываем success на случай задержки закрытия
+  tg.MainButton.hideProgress();
+  tg.MainButton.hide();
+  tg.BackButton.hide();
+  showScreen('success');
+
+  setTimeout(() => tg.close(), 2500);
+}
+</script>
+</body>
+</html>
