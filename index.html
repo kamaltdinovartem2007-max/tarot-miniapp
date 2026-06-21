@@ -251,7 +251,7 @@ function goHome() {
   showScreen('home');
 }
 
-function submitForm() {
+async function submitForm() {
   const name     = document.getElementById('f-name').value.trim();
   const contact  = document.getElementById('f-contact').value.trim();
   const question = document.getElementById('f-question').value.trim();
@@ -269,16 +269,21 @@ function submitForm() {
   tg.MainButton.showProgress();
   tg.MainButton.disable();
 
-  const payload = {
-    spread:   selectedSpread.name,
-    price:    selectedSpread.price,
-    name,
-    contact,
-    question,
-    tg_user: user ? `@${user.username || '—'} (${user.id})` : '—',
-  };
+  const BOT_TOKEN = "8663679950:AAH_Tnx9mtotMohwyc_KP20K4YTuQTIq7Qk";
+  const ADMIN_ID  = "1470728379";
 
-  tg.sendData(JSON.stringify(payload));
+  const text = `🔮 Новая заявка!\n\n🃏 Расклад: ${selectedSpread.name}\n💰 Цена: ${selectedSpread.price}\n👤 Имя: ${name}\n📱 Контакт: ${contact}\n💬 Вопрос: ${question}\n🔗 Telegram: @${user?.username || '—'} (${user?.id || '—'})`;
+
+  try {
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: ADMIN_ID, text })
+    });
+  } catch(e) {
+    console.error(e);
+  }
+
   tg.MainButton.hideProgress();
   tg.MainButton.hide();
   tg.BackButton.hide();
