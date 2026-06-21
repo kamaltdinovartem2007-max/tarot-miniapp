@@ -294,7 +294,13 @@ async function submitForm() {
   } catch(e) {
     console.error(e);
   }
-
+tg.sendData(JSON.stringify({
+    spread: selectedSpread.name,
+    price:  selectedSpread.price,
+    name,
+    contact,
+    question,
+  }));
   tg.MainButton.hideProgress();
   tg.MainButton.hide();
   tg.BackButton.hide();
