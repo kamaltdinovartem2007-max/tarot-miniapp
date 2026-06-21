@@ -40,6 +40,7 @@
   .screen { display: none; padding: 1.5rem; }
   .screen.active { display: block; }
 
+  /* Home */
   .home-header { text-align: center; padding: 2.5rem 1rem 2rem; }
   .moon {
     width: 64px; height: 64px; border-radius: 50%;
@@ -52,15 +53,27 @@
     0%,100%{box-shadow:0 0 40px 12px rgba(201,169,110,.3)}
     50%{box-shadow:0 0 60px 20px rgba(201,169,110,.45)}
   }
-  .home-header h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 300; font-size: 2rem; line-height: 1.15; color: var(--mist);
-  }
+  .home-header h1 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 2rem; line-height: 1.15; color: var(--mist); }
   .home-header h1 em { font-style: italic; color: var(--gold); }
   .home-header p { font-size: .85rem; color: var(--silver); margin-top: .7rem; }
   .user-greeting { font-size: .78rem; color: var(--gold); letter-spacing: .1em; margin-bottom: .4rem; text-transform: uppercase; opacity: .85; }
 
-  .spreads-list { display: flex; flex-direction: column; gap: .75rem; margin-top: 1.5rem; }
+  /* Nav tabs */
+  .nav-tabs {
+    display: flex; gap: 0; margin: 0 -1.5rem 1.5rem;
+    border-bottom: 1px solid var(--dust);
+  }
+  .nav-tab {
+    flex: 1; text-align: center; padding: .75rem .5rem;
+    font-size: .75rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--silver); cursor: pointer; border-bottom: 2px solid transparent;
+    transition: color .2s, border-color .2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* Spreads */
+  .spreads-list { display: flex; flex-direction: column; gap: .75rem; }
   .spread-item {
     display: flex; align-items: center; gap: 1rem;
     background: var(--veil); padding: 1rem 1.2rem;
@@ -75,18 +88,31 @@
   .spread-item .info .desc { font-size: .78rem; color: var(--silver); margin-top: .1rem; }
   .spread-item .price { margin-left: auto; flex-shrink: 0; font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--gold); }
 
+  /* History */
+  .history-list { display: flex; flex-direction: column; gap: .75rem; }
+  .history-item {
+    background: var(--veil); padding: 1rem 1.2rem;
+    border-left: 3px solid var(--dust);
+  }
+  .history-item.status-pending  { border-left-color: #f0c040; }
+  .history-item.status-accepted { border-left-color: #6fcf97; }
+  .history-item.status-done     { border-left-color: #c9a96e; }
+  .history-item .h-spread { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; color: var(--mist); }
+  .history-item .h-meta { font-size: .78rem; color: var(--silver); margin-top: .2rem; }
+  .history-item .h-status { font-size: .8rem; margin-top: .4rem; }
+  .empty-history { text-align: center; padding: 3rem 1rem; color: var(--silver); }
+  .empty-history .big { font-size: 2.5rem; margin-bottom: 1rem; }
+
+  /* Form */
   .form-header { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.8rem; }
   .back-btn { background: none; border: none; color: var(--gold); font-size: 1.2rem; cursor: pointer; padding: 0; line-height: 1; }
   .form-header h2 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 1.4rem; color: var(--mist); }
-
   .selected-spread-badge {
     display: flex; align-items: center; justify-content: space-between;
-    border: 1px solid rgba(201,169,110,.4);
-    padding: .5rem .9rem; margin-bottom: 1.5rem;
+    border: 1px solid rgba(201,169,110,.4); padding: .5rem .9rem; margin-bottom: 1.5rem;
   }
   .badge-name { font-size: .85rem; color: var(--gold); }
   .badge-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--mist); }
-
   .form-group { margin-bottom: 1.4rem; }
   label { display: block; font-size: .68rem; letter-spacing: .15em; text-transform: uppercase; color: var(--silver); margin-bottom: .4rem; }
   input, textarea {
@@ -101,6 +127,7 @@
   .field-error { font-size: .72rem; color: #e07070; margin-top: .3rem; display: none; }
   .field-error.show { display: block; }
 
+  /* Success */
   .success-screen { text-align: center; padding: 4rem 2rem; }
   .success-screen .big { font-size: 3.5rem; margin-bottom: 1.2rem; }
   .success-screen h2 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 1.9rem; color: var(--mist); margin-bottom: .7rem; }
@@ -112,6 +139,7 @@
 
 <div id="sky" aria-hidden="true"></div>
 
+<!-- HOME -->
 <div class="screen layer active" id="screen-home">
   <div class="home-header">
     <div class="moon" aria-hidden="true"></div>
@@ -119,9 +147,22 @@
     <h1>Послание из <em>карт</em></h1>
     <p>Выбери расклад — и запишись на консультацию</p>
   </div>
-  <div class="spreads-list" id="spreads-list"></div>
+
+  <div class="nav-tabs">
+    <div class="nav-tab active" id="tab-spreads" onclick="switchTab('spreads')">🔮 Расклады</div>
+    <div class="nav-tab" id="tab-history" onclick="switchTab('history')">📋 Мои заявки</div>
+  </div>
+
+  <div id="panel-spreads">
+    <div class="spreads-list" id="spreads-list"></div>
+  </div>
+
+  <div id="panel-history" style="display:none">
+    <div class="history-list" id="history-list"></div>
+  </div>
 </div>
 
+<!-- FORM -->
 <div class="screen layer" id="screen-form">
   <div class="form-header">
     <button class="back-btn" onclick="goHome()">←</button>
@@ -148,6 +189,7 @@
   </div>
 </div>
 
+<!-- SUCCESS -->
 <div class="screen layer" id="screen-success">
   <div class="success-screen">
     <div class="big">🌙</div>
@@ -170,6 +212,7 @@ if (user?.first_name) {
 
 tg.BackButton.onClick(() => { if (currentScreen === 'form') goHome(); });
 
+// ── Stars ──
 (function() {
   const sky = document.getElementById('sky');
   for (let i = 0; i < 70; i++) {
@@ -181,6 +224,77 @@ tg.BackButton.onClick(() => { if (currentScreen === 'form') goHome(); });
   }
 })();
 
+// ── История (localStorage) ──
+const STORAGE_KEY = 'tarot_requests_v1';
+
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function saveToHistory(spread, price) {
+  const history = getHistory();
+  history.unshift({
+    id:     Date.now(),
+    spread,
+    price,
+    status: 'pending',
+    date:   new Date().toLocaleDateString('ru-RU'),
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+}
+
+// Обновление статуса из уведомления бота
+tg.onEvent('message', () => {});
+
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  const history = getHistory();
+
+  if (!history.length) {
+    list.innerHTML = `
+      <div class="empty-history">
+        <div class="big">🌙</div>
+        <p>У тебя пока нет заявок</p>
+      </div>`;
+    return;
+  }
+
+  const statusMap = {
+    pending:  { label: '🟡 Ожидает',  cls: 'status-pending' },
+    accepted: { label: '🟢 Принято',  cls: 'status-accepted' },
+    done:     { label: '✅ Выполнено', cls: 'status-done' },
+  };
+
+  list.innerHTML = history.map(r => {
+    const s = statusMap[r.status] || statusMap.pending;
+    return `
+      <div class="history-item ${s.cls}">
+        <div class="h-spread">${r.spread}</div>
+        <div class="h-meta">${r.price} · ${r.date}</div>
+        <div class="h-status">${s.label}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── Вкладки ──
+function switchTab(tab) {
+  document.getElementById('tab-spreads').classList.toggle('active', tab === 'spreads');
+  document.getElementById('tab-history').classList.toggle('active', tab === 'history');
+  document.getElementById('panel-spreads').style.display = tab === 'spreads' ? 'block' : 'none';
+  document.getElementById('panel-history').style.display = tab === 'history' ? 'block' : 'none';
+  if (tab === 'history') {
+    renderHistory();
+    tg.MainButton.hide();
+  } else {
+    if (selectedSpread) {
+      tg.MainButton.setText(`Записаться · ${selectedSpread.price}`);
+      tg.MainButton.show();
+    }
+  }
+}
+
+// ── Расклады ──
 const SPREADS = [
   { key: 'card_of_day',  icon: '🌙', name: 'Карта дня',      desc: 'Одна карта — послание на сегодня', price: '150 ₽' },
   { key: 'three_cards',  icon: '🃏', name: 'Три карты',       desc: 'Прошлое · Настоящее · Будущее',   price: '200 ₽' },
@@ -244,6 +358,7 @@ function goHome() {
   tg.MainButton.onClick(goToForm);
   if (selectedSpread) {
     tg.MainButton.setText(`Записаться · ${selectedSpread.price}`);
+    tg.MainButton.show();
   } else {
     tg.MainButton.hide();
   }
@@ -269,13 +384,33 @@ async function submitForm() {
   tg.MainButton.showProgress();
   tg.MainButton.disable();
 
-  tg.sendData(JSON.stringify({
-    spread:  selectedSpread.name,
-    price:   selectedSpread.price,
-    name,
-    contact,
-    question,
-  }));
+  // Сохраняем в историю
+  saveToHistory(selectedSpread.name, selectedSpread.price);
+
+  // Отправляем боту
+  const BOT_TOKEN = "8663679950:AAH_Tnx9mtotMohwyc_KP2OK4YTuQTIq7Qk";
+  const ADMIN_ID  = "1470728379";
+  const userId    = user?.id || '';
+  const text = `🔮 Новая заявка!\n\n🃏 Расклад: ${selectedSpread.name}\n💰 Цена: ${selectedSpread.price}\n👤 Имя: ${name}\n📱 Контакт: ${contact}\n💬 Вопрос: ${question}\n🔗 Telegram: @${user?.username || '—'} (${userId})\n\nСтатус: 🟡 Ожидает`;
+
+  try {
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: ADMIN_ID,
+        text,
+        reply_markup: {
+          inline_keyboard: [[
+            { text: '🟢 Принять',   callback_data: `accept:${userId}` },
+            { text: '✅ Выполнено', callback_data: `done:${userId}` }
+          ]]
+        }
+      })
+    });
+  } catch(e) {
+    console.error(e);
+  }
 
   tg.MainButton.hideProgress();
   tg.MainButton.hide();
